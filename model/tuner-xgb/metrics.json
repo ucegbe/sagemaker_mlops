@@ -1,0 +1,25 @@
+{
+  "task_type": "binary",
+  "auc_roc": 0.6810423506002475,
+  "auc_pr": 0.24059265270449226,
+  "accuracy": 0.5842772404372173,
+  "precision": 0.20743137973697476,
+  "recall": 0.6937639368884053,
+  "f1": 0.3193723002897917,
+  "threshold": 0.5,
+  "confusion_matrix": {
+    "tn": 903621,
+    "fp": 691849,
+    "fn": 79927,
+    "tp": 181071
+  },
+  "best_round": 107,
+  "train_rows": 7425870,
+  "val_rows": 1856468,
+  "n_features": 47,
+  "distributed": false,
+  "num_workers": 1,
+  "training_time_s": 98.1,
+  "total_time_s": 111.8,
+  "best_val_logloss": 0.6405828537386958
+}

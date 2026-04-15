@@ -1,0 +1,21 @@
+{
+  "objective": "binary:logistic",
+  "eval_metric": [
+    "logloss",
+    "auc"
+  ],
+  "tree_method": "hist",
+  "max_depth": 4,
+  "learning_rate": 0.11618291401180797,
+  "subsample": 0.9916607209694728,
+  "colsample_bytree": 0.6877471396004784,
+  "min_child_weight": 4,
+  "nthread": 16,
+  "seed": 42,
+  "scale_pos_weight": 6.12512557462083,
+  "num_boost_round": 500,
+  "early_stopping_rounds": 20,
+  "actual_rounds": 108,
+  "use_gpu": false,
+  "num_workers": 1
+}

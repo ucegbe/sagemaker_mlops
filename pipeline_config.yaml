@@ -1,0 +1,136 @@
+# Pipeline configuration for SageMaker Training Pipeline.
+# Edit this file to customize defaults. All parameter values can be
+# overridden at execution time via --params Key=Value.
+#
+# Config-level settings (source, tuning_ranges) are baked at pipeline
+# creation time — changes require re-creating the pipeline.
+
+pipeline:
+  name: loan-training-pipeline
+  fe_training_name: loan-fe-training-sm-pipeline-1
+  # IAM execution role ARN. Set to null to auto-detect from runtime environment.
+  role: null
+
+# Source code configuration (baked at pipeline creation time).
+# source_dir accepts local paths or S3 URIs (e.g., s3://bucket/path/source.tar.gz).
+source:
+  feature_engineering:
+    source_dir: src
+    entry_point: sagemaker_run.py
+  xgboost:
+    source_dir: src_dist_training
+    entry_point: sagemaker_train.py
+  lightgbm:
+    source_dir: src_dist_training_lgbm
+    entry_point: sagemaker_train.py
+  framework_version: "2.5.1"
+  py_version: py311
+
+# Default values for pipeline parameters.
+# Override at execution time: --params Key=Value
+parameters:
+  # Pipeline control
+  AlgorithmChoice: both              # xgboost | lightgbm | both
+  RunTuning: "false"                 # "true" | "false"
+
+  # Feature Engineering
+  FeRawInputS3Uri: "s3://mm-fsi-fix/loan-fe/raw_loan_data.csv"
+  FeOutputS3Uri: "s3://mm-fsi-fix/loan-fe/features"
+  FeInstanceType: ml.m5.4xlarge
+  FeInstanceCount: 2
+  FeVolumeSize: 30
+  FeOutputFormat: csv                # csv | parquet
+  FeNoHeader: "false"                 # "true" | "false" — must match training XgbNoHeader/LgbmNoHeader
+  FeBatchSize: 65536
+  FeValSplit: 0.2                    # must be > 0 for FE→Training pipeline
+
+  # Infrastructure
+  InstanceType: ml.m5.4xlarge
+  InstanceCount: 1
+  VolumeSize: 30
+
+  # Data paths (S3 URIs)
+  TrainS3Uri: "s3://sagemaker-us-east-1-734584155256/omf-loan-fake/training-data1/train"
+  ValS3Uri: "s3://sagemaker-us-east-1-734584155256/omf-loan-fake/training-data1/val"
+  OutputS3Uri: "s3://sagemaker-us-east-1-734584155256/omf-loan-fake/model/"
+
+  # Shared training settings
+  NumRounds: 500
+  EarlyStopping: 20
+
+  # XGBoost hyperparameters
+  XgbObjective: "binary:logistic"
+  XgbTreeMethod: hist
+  XgbNoHeader: "false"                # "true" | "false"
+  XgbLearningRate: 0.1
+  XgbMaxDepth: 7
+  XgbSubsample: 0.8
+  XgbColsampleBytree: 0.8
+  XgbMinChildWeight: 5
+
+  # LightGBM hyperparameters
+  LgbmObjective: binary
+  LgbmNoHeader: "false"              # "true" | "false"
+  LgbmLearningRate: 0.1
+  LgbmMaxDepth: 7
+  LgbmNumLeaves: 127
+  LgbmSubsample: 0.8
+  LgbmColsampleBytree: 0.8
+  LgbmMinChildSamples: 20
+
+  # HPO tuning settings
+  MaxTuningJobs: 20
+  MaxParallelJobs: 4
+  TuningStrategy: Bayesian           # Bayesian | Random | Grid | Hyperband
+  ObjectiveMetric: auc-roc
+  ObjectiveType: Maximize             # Maximize | Minimize
+
+# Hyperparameter tuning ranges (baked at pipeline creation time).
+# Changing ranges requires re-creating the pipeline (re-run pipeline_training.py).
+tuning_ranges:
+  xgboost:
+    learning-rate:
+      type: continuous
+      min: 0.01
+      max: 0.3
+    max-depth:
+      type: integer
+      min: 3
+      max: 10
+    subsample:
+      type: continuous
+      min: 0.5
+      max: 1.0
+    colsample-bytree:
+      type: continuous
+      min: 0.5
+      max: 1.0
+    min-child-weight:
+      type: integer
+      min: 1
+      max: 10
+  lightgbm:
+    learning-rate:
+      type: continuous
+      min: 0.01
+      max: 0.3
+    max-depth:
+      type: integer
+      min: 3
+      max: 10
+    num-leaves:
+      type: integer
+      min: 15
+      max: 255
+    subsample:
+      type: continuous
+      min: 0.5
+      max: 1.0
+    colsample-bytree:
+      type: continuous
+      min: 0.5
+      max: 1.0
+    min-child-samples:
+      type: integer
+      min: 5
+      max: 50

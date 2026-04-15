@@ -1,0 +1,60 @@
+# For full schema check here: https://github.com/aws/sagemaker-python-sdk/blob/v2.257.1/src/sagemaker/config/config_schema.py
+SchemaVersion: "1.0"
+
+SageMaker:
+  # PythonSDK:
+    # Modules:
+    #   Session:
+    #     DefaultS3Bucket: "sagemaker-us-east-1-734584155256"
+    #     DefaultS3ObjectKeyPrefix: "omf-loan-fake"
+
+  TrainingJob:
+    # RoleArn: "arn:aws:iam::734584155256:role/SageMakerExecutionRole"
+    EnableInterContainerTrafficEncryption: true
+    EnableNetworkIsolation: false
+    # Environment:
+    #   PROJECT: "omf-loan-fake"
+    #   TEAM: "data-science"
+    # OutputDataConfig:
+    #   KmsKeyId: "arn:aws:kms:us-east-1:734584155256:key/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    # ResourceConfig:
+    #   VolumeKmsKeyId: "arn:aws:kms:us-east-1:734584155256:key/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    ProfilerConfig:
+      DisableProfiler: true
+    # VpcConfig:
+    #   SecurityGroupIds:
+    #     - "sg-xxxxxxxx"
+    #   Subnets:
+    #     - "subnet-xxxxxxxx"
+    #     - "subnet-yyyyyyyy"
+    Tags:
+      - Key: "project"
+        Value: "omf-loan-fake"
+      - Key: "team"
+        Value: "data-science"
+
+  ProcessingJob:
+    # RoleArn: "arn:aws:iam::734584155256:role/SageMakerExecutionRole"
+    # Environment:
+    #   PROJECT: "omf-loan-fake"
+    #   TEAM: "data-science"
+    NetworkConfig:
+      EnableInterContainerTrafficEncryption: true
+      EnableNetworkIsolation: false
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - "sg-xxxxxxxx"
+      #   Subnets:
+      #     - "subnet-xxxxxxxx"
+      #     - "subnet-yyyyyyyy"
+    # ProcessingOutputConfig:
+    #   KmsKeyId: "arn:aws:kms:us-east-1:734584155256:key/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    # ProcessingResources:
+    #   ClusterConfig:
+    #     VolumeKmsKeyId: "arn:aws:kms:us-east-1:734584155256:key/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    Tags:
+      - Key: "project"
+        Value: "omf-loan-fake"
+      - Key: "team"
+        Value: "data-science"
+       
